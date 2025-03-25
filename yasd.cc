@@ -44,23 +44,23 @@ ZEND_DECLARE_MODULE_GLOBALS(yasd)
 
 // clang-format off
 PHP_INI_BEGIN()
-STD_PHP_INI_ENTRY("yasd.breakpoints_file", "", PHP_INI_ALL, OnUpdateString,
+STD_PHP_INI_ENTRY("chrelyonly-debug.breakpoints_file", "", PHP_INI_ALL, OnUpdateString,
         breakpoints_file, zend_yasd_globals, yasd_globals)
-STD_PHP_INI_ENTRY("yasd.debug_mode", "cmd", PHP_INI_ALL, OnUpdateString,
+STD_PHP_INI_ENTRY("chrelyonly-debug.debug_mode", "remote", PHP_INI_ALL, OnUpdateString,
         debug_mode, zend_yasd_globals, yasd_globals)
-STD_PHP_INI_ENTRY("yasd.remote_host", "127.0.0.1", PHP_INI_ALL, OnUpdateStringUnempty,
+STD_PHP_INI_ENTRY("chrelyonly-debug.remote_host", "127.0.0.1", PHP_INI_ALL, OnUpdateStringUnempty,
         remote_host, zend_yasd_globals, yasd_globals)
-STD_PHP_INI_ENTRY("yasd.remote_port", "9000", PHP_INI_ALL, OnUpdateLong,
+STD_PHP_INI_ENTRY("chrelyonly-debug.remote_port", "9000", PHP_INI_ALL, OnUpdateLong,
         remote_port, zend_yasd_globals, yasd_globals)
-STD_PHP_INI_ENTRY("yasd.depth", "1", PHP_INI_ALL, OnUpdateLong,
+STD_PHP_INI_ENTRY("chrelyonly-debug.depth", "1", PHP_INI_ALL, OnUpdateLong,
         depth, zend_yasd_globals, yasd_globals)
-STD_PHP_INI_ENTRY("yasd.log_level", "-1", PHP_INI_ALL, OnUpdateLong,
+STD_PHP_INI_ENTRY("chrelyonly-debug.log_level", "-1", PHP_INI_ALL, OnUpdateLong,
         log_level, zend_yasd_globals, yasd_globals)
-STD_PHP_INI_ENTRY("yasd.max_executed_opline_num", "0", PHP_INI_ALL, OnUpdateLong,
+STD_PHP_INI_ENTRY("chrelyonly-debug.max_executed_opline_num", "0", PHP_INI_ALL, OnUpdateLong,
         max_executed_opline_num, zend_yasd_globals, yasd_globals)
-STD_PHP_INI_ENTRY("yasd.init_file", "", PHP_INI_ALL, OnUpdateStringUnempty,
+STD_PHP_INI_ENTRY("chrelyonly-debug.init_file", "", PHP_INI_ALL, OnUpdateStringUnempty,
         init_file, zend_yasd_globals, yasd_globals)
-STD_PHP_INI_ENTRY("yasd.open_extended_info", "0", PHP_INI_ALL, OnUpdateLong,
+STD_PHP_INI_ENTRY("chrelyonly-debug.open_extended_info", "0", PHP_INI_ALL, OnUpdateLong,
         open_extended_info, zend_yasd_globals, yasd_globals)
 
 // compatible with phpstorm
@@ -225,7 +225,7 @@ ZEND_DLEXPORT void yasd_statement_call(zend_execute_data *frame) {
     unsigned int lineno = online->lineno;
 
     yasd::Context *context = global->get_current_context();
-    
+
     add_executed_opline_num(frame);
 
     if (!EG(current_execute_data)) {
@@ -252,7 +252,7 @@ ZEND_DLEXPORT void yasd_statement_call(zend_execute_data *frame) {
     if (is_infinite_loop()) {
         return global->debugger->handle_request(filename, lineno);
     }
-    
+
     // The breakpoint check should be last
     if (!global->do_step && !global->do_next) {
         if (!is_hit_line_breakpoint(filename, lineno)) {
